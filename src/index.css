@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0a0a0a;
+  --color-foreground: #fafafa;
+  --color-primary: #facc15; /* Yellow accent */
+  --color-primary-foreground: #0a0a0a;
+  --color-card: #141414;
+  --color-card-foreground: #fafafa;
+  --color-border: #262626;
+  --color-muted: #262626;
+  --color-muted-foreground: #a3a3a3;
+
+  /* Brand Colors */
+  --color-brand-blue: #211964;
+  --color-brand-yellow: #ffd714;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-roboto: "Roboto", Tahoma, sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 98%;
+    --primary: 48 96% 53%;
+    --primary-foreground: 0 0% 4%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 98%;
+    --border: 0 0% 15%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 64%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased selection:bg-primary selection:text-primary-foreground;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply tracking-tight;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
