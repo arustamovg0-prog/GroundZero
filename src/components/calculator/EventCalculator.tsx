@@ -19,7 +19,7 @@ export function EventCalculator() {
     total: number;
   } | null>(null);
 
-  const calculatePrice = () => {
+  const calculatePrice = async () => {
     if (!guests || !date) return;
 
     const numGuests = Number(guests);
@@ -27,18 +27,29 @@ export function EventCalculator() {
     const isWeekend =
       selectedDate.getDay() === 0 || selectedDate.getDay() === 6;
 
-    // Base logic
-    let baseRate = 500000; // per hour base
-    if (numGuests > 50) baseRate = 800000;
-    if (numGuests > 100) baseRate = 1200000; // Corporate package
+    try {
+      const response = await fetch("/api/events/calc", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          guests: numGuests,
+          hours: 1, // Assuming 1 hour for base calculation in this UI
+          isWeekend,
+        }),
+      });
 
-    const surcharge = isWeekend ? baseRate * 0.2 : 0; // 20% weekend surcharge
-
-    setPrice({
-      base: baseRate,
-      surcharge,
-      total: baseRate + surcharge,
-    });
+      const data = await response.json();
+      if (response.ok) {
+        setPrice({
+          base: data.price,
+          surcharge: isWeekend ? data.price * 0.2 : 0, // Just for display
+          total: data.price,
+          isCorporate: data.isCorporate
+        } as any);
+      }
+    } catch (error) {
+      console.error("Calculation error", error);
+    }
   };
 
   const handleGeneratePDF = async () => {

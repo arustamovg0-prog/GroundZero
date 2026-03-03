@@ -47,35 +47,47 @@ export function B2BForm({ productName }: { productName?: string }) {
     setSubmitError("");
 
     try {
-      // Simulate API calls: Notify manager, Google Sheets, Client confirmation
-      await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          if (Math.random() < 0.1) {
-            reject(
-              new Error(
-                "Ошибка при отправке данных. Пожалуйста, попробуйте еще раз.",
-              ),
-            );
-          } else {
-            resolve(true);
-          }
-        }, 1500);
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          company: formData.company,
+          teamSize: Number(formData.employees),
+          term: Number(formData.contractTerm),
+          segment: productName || "Corporate",
+          utm: window.location.search,
+        }),
       });
 
-      if (Number(formData.contractTerm) >= 24) {
-        console.log(
-          "[CRM Sync] Priority Client status assigned. Notification sent to management.",
-        );
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.errors) {
+          const serverErrors: Record<string, string> = {};
+          data.errors.forEach((err: any) => {
+            serverErrors[err.path[0]] = err.message;
+          });
+          setErrors(serverErrors);
+          throw new Error("Пожалуйста, исправьте ошибки в форме");
+        }
+        throw new Error(data.message || "Ошибка при отправке данных");
       }
 
-      setIsSuccess(true);
+      // Fire GA4 event
+      if (typeof window !== "undefined" && (window as any).gtag) {
+        (window as any).gtag("event", "generate_lead", {
+          currency: "UZS",
+          value: 0,
+          lead_type: "B2B",
+        });
+      }
+
+      window.location.href = "/thank-you";
     } catch (err: any) {
-      console.error(
-        "[CRM Error] Failed to sync data, logging to fallback storage:",
-        formData,
-      );
       setSubmitError(err.message || "Произошла ошибка");
-    } finally {
       setIsSubmitting(false);
     }
   };

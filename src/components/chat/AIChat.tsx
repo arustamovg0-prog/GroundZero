@@ -37,35 +37,29 @@ export function AIChat() {
     setIsError(false);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const prompt = `
-        Ты AI-квалификатор коворкинга Ground Zero. 
-        Твоя задача - определить подходящий продукт на основе количества человек, которое назовет пользователь.
-        Правила:
-        - 1-3 человека: Предложи "Open Space" (Hot Desk / Personal Desk).
-        - 4-15 человек: Предложи "Team Office" (Готовый изолированный офис).
-        - 20+ человек: Предложи "Корпоративное решение" (Отдельный этаж) и попроси оставить контактные данные для передачи менеджеру.
-        
-        Отвечай коротко, вежливо и по делу.
-        
-        История диалога:
-        ${messages.map((m) => `${m.role === "bot" ? "Ты" : "Пользователь"}: ${m.text}`).join("\n")}
-        Пользователь: ${userMsg}
-      `;
-
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt,
+      const response = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: userMsg,
+          history: messages,
+        }),
       });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Ошибка AI сервиса");
+      }
 
       setMessages((prev) => [
         ...prev,
-        { role: "bot", text: response.text || "Извините, я не понял." },
+        { role: "bot", text: data.reply || "Извините, я не понял." },
       ]);
 
       // Simulate CRM Tagging if qualified
-      if (userMsg.match(/\d+/)) {
-        console.log("[CRM Sync] Lead Qualified via AI. Segment Tag applied.");
+      if (data.qualification) {
+        console.log(`[CRM Sync] Lead Qualified via AI. Segment: ${data.qualification}`);
       }
     } catch (err) {
       console.error("AI Chat Error:", err);

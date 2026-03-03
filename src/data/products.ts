@@ -60,13 +60,13 @@ export const products: Record<string, ProductData> = {
     pricing: [
       {
         name: "Night Pass",
-        price: "150 000 UZS",
+        price: "90 000 сум",
         period: "за ночь",
         features: ["Доступ на 1 ночь", "Open Space", "Кофе-поинт"],
       },
       {
-        name: "Night Resident",
-        price: "1 500 000 UZS",
+        name: "Night Unlimited PRO",
+        price: "1 500 000 сум",
         period: "в месяц",
         features: [
           "Безлимитный доступ ночью",
@@ -130,26 +130,25 @@ export const products: Record<string, ProductData> = {
     ],
     pricing: [
       {
-        name: "Hot Desk",
-        price: "2 000 000 UZS",
+        name: "Hot Desk Unlimited",
+        price: "2 200 000 сум",
         period: "в месяц",
         features: [
           "Любое свободное место",
           "Доступ 24/7",
-          "2 часа переговорных",
-          "Кофе-поинт",
+          "Фитнес-зал",
+          "Капсулы для сна",
         ],
       },
       {
-        name: "Personal Desk",
-        price: "2 800 000 UZS",
+        name: "Personal Hot Desk",
+        price: "2 900 000 сум",
         period: "в месяц",
         features: [
           "Закрепленное место",
           "Доступ 24/7",
-          "5 часов переговорных",
-          "Локер",
           "Юридический адрес",
+          "Локер",
         ],
       },
     ],
@@ -208,7 +207,7 @@ export const products: Record<string, ProductData> = {
     pricing: [
       {
         name: "Офис на 2-4 человека",
-        price: "от 8 000 000 UZS",
+        price: "от 8 000 000 сум",
         period: "в месяц",
         features: [
           "Изолированный кабинет",
@@ -219,7 +218,7 @@ export const products: Record<string, ProductData> = {
       },
       {
         name: "Офис на 5-10 человек",
-        price: "от 18 000 000 UZS",
+        price: "от 18 000 000 сум",
         period: "в месяц",
         features: [
           "Просторный кабинет",
@@ -287,14 +286,14 @@ export const products: Record<string, ProductData> = {
     ],
     pricing: [
       {
-        name: "Малая переговорная (до 4 чел)",
-        price: "100 000 UZS",
+        name: "Малая переговорная (до 8 чел)",
+        price: "от 130 000 сум",
         period: "в час",
         features: ["ТВ-панель", "Маркерная доска", "Вода"],
       },
       {
-        name: "Большая переговорная (до 10 чел)",
-        price: "250 000 UZS",
+        name: "Большая переговорная (до 16 чел)",
+        price: "от 165 000 сум",
         period: "в час",
         features: [
           "Проектор/ТВ",
@@ -361,15 +360,15 @@ export const products: Record<string, ProductData> = {
     ],
     pricing: [
       {
-        name: "Амфитеатр (до 50 чел)",
-        price: "1 000 000 UZS",
-        period: "за 3 часа",
+        name: "Амфитеатр Kitob Olami (до 30 чел)",
+        price: "1 000 000 сум",
+        period: "за 2 часа",
         features: ["Проектор", "Микрофоны", "Звук", "Кликер"],
       },
       {
-        name: "Конференц-зал (до 100 чел)",
-        price: "2 500 000 UZS",
-        period: "за 3 часа",
+        name: "Event-зона (до 70 чел)",
+        price: "1 600 000 сум",
+        period: "за 2 часа",
         features: ["LED-экран", "Проф. звук", "Свет", "Зона кейтеринга"],
       },
     ],
@@ -427,8 +426,8 @@ export const products: Record<string, ProductData> = {
     ],
     pricing: [
       {
-        name: "Базовый",
-        price: "500 000 UZS",
+        name: "Юридический адрес",
+        price: "600 000 сум",
         period: "в месяц",
         features: [
           "Юридический адрес",
@@ -437,14 +436,14 @@ export const products: Record<string, ProductData> = {
         ],
       },
       {
-        name: "Бизнес",
-        price: "900 000 UZS",
+        name: "Virtual Desk",
+        price: "920 000 сум",
         period: "в месяц",
         features: [
           "Юридический адрес",
           "Прием почты",
           "Ответы на звонки",
-          "2 часа переговорных",
+          "Обработка писем",
         ],
       },
     ],

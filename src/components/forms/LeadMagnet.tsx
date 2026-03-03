@@ -18,14 +18,18 @@ export function LeadMagnet() {
 
     setStatus("loading");
     try {
-      // Simulate Mailchimp API
-      await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          if (Math.random() < 0.1)
-            reject(new Error("Ошибка отправки. Проверьте email."));
-          else resolve(true);
-        }, 1500);
+      const response = await fetch("/api/downloads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Ошибка отправки. Проверьте email.");
+      }
+
       setStatus("success");
     } catch (err: any) {
       setStatus("error");
