@@ -1,4 +1,5 @@
 import { useParams, Navigate, Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { motion } from "motion/react";
 import { ArrowRight, CheckCircle2, Info, ChevronRight } from "lucide-react";
 import { products } from "@/data/products";
@@ -18,6 +19,10 @@ export function Product() {
 
   return (
     <div className="flex flex-col w-full">
+      <Helmet>
+        <title>{`${product.title} | Ground Zero Coworking`}</title>
+        <meta name="description" content={product.heroDesc} />
+      </Helmet>
       {/* Hero продукта */}
       <section className="relative min-h-[70vh] flex items-center pt-24 pb-12 overflow-hidden">
         <div className="absolute inset-0 z-0">

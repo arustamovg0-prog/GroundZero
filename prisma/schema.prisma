@@ -3,69 +3,74 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
+// ------------------------------------------------------
+// Модель 1: Локации (Филиалы GroundZero)
+// ------------------------------------------------------
+model Location {
+  id        Int       @id @default(autoincrement())
+  name      String    // "Kitob Olami", "Minor", "Sharq"
+  address   String
+  bookings  Booking[] // Связь: какие бронирования есть в этой локации
+  createdAt DateTime  @default(now())
+}
+
+// ------------------------------------------------------
+// Модель 2: Лиды (Заявки с сайта на тарифы, виртуальный офис и т.д.)
+// ------------------------------------------------------
 model Lead {
-  id        String      @id @default(uuid())
-  name      String
-  email     String?
-  phone     String?
-  company   String?
-  teamSize  Int?
-  term      Int?
-  segment   String?     // Open Space / Team Office / Corporate
-  status    String      @default("NEW") // NEW, PRIORITY_CLIENT, CONTACTED, WON, LOST
-  priority  Boolean     @default(false)
-  utm       String?
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-
-  events    LeadEvent[]
-  downloads Download[]
-}
-
-model LeadEvent {
-  id        String   @id @default(uuid())
-  leadId    String
-  type      String   // PRE_QUALIFICATION, FORM_SUBMIT, STATUS_CHANGE
-  details   String?
-  createdAt DateTime @default(now())
-
-  lead      Lead     @relation(fields: [leadId], references: [id])
-}
-
-model Download {
-  id        String   @id @default(uuid())
-  email     String
-  pdfName   String
-  leadId    String?
-  createdAt DateTime @default(now())
-
-  lead      Lead?    @relation(fields: [leadId], references: [id])
-}
-
-model Inventory {
-  id        String   @id @default(uuid())
-  branch    String
-  product   String
-  status    String   // AVAILABLE, LIMITED, FULL
-  updatedAt DateTime @updatedAt
-}
-
-model LandingPage {
-  id          String   @id @default(uuid())
-  slug        String   @unique
-  title       String
-  description String?
-  content     String?
+  id          Int      @id @default(autoincrement())
+  name        String
+  phone       String
+  email       String?
+  company     String?  // Название компании (опционально, для B2B)
+  interestIn  String   // Какой тариф интересует: "Night Flow", "Hot Desk", "Virtual Office"
+  teamSize    Int?
+  term        Int?
+  utm         String?
+  status      String   @default("NEW") // Статусы: NEW, IN_PROGRESS, CLOSED_WON, CLOSED_LOST
+  notes       String?  // Комментарии менеджера
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
+// ------------------------------------------------------
+// Модель 3: Бронирования (Event-зоны и Митинг-румы)
+// ------------------------------------------------------
+model Booking {
+  id            Int      @id @default(autoincrement())
+  clientName    String
+  clientPhone   String
+  locationId    Int      // Ссылка на локацию (ID филиала)
+  location      Location @relation(fields: [locationId], references: [id])
+  roomType      String   // "Meeting Room 10 мест", "Event Zone 70 мест", "Амфитеатр"
+  date          DateTime // Дата бронирования
+  durationHours Int      // Длительность в часах (2, 4 или более)
+  guestsCount   Int      // Количество гостей
+  totalPrice    Int?     // Рассчитанная стоимость (опционально)
+  status        String   @default("PENDING") // Статусы: PENDING, CONFIRMED, CANCELLED
+  createdAt     DateTime @default(now())
+}
+
+// ------------------------------------------------------
+// Модель 4: Инвентарь (Статус доступности продуктов по филиалам)
+// ------------------------------------------------------
+model Inventory {
+  id        Int      @id @default(autoincrement())
+  branch    String
+  product   String
+  status    String   @default("AVAILABLE") // AVAILABLE, FULL
+  updatedAt DateTime @updatedAt
+}
+
+// ------------------------------------------------------
+// Модель 5: Настройки (Глобальные конфигурации)
+// ------------------------------------------------------
 model Settings {
-  id    String @id @default(uuid())
+  id    Int    @id @default(autoincrement())
   key   String @unique
   value String
 }

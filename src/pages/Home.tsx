@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { motion } from "motion/react";
 import {
   ArrowRight,
@@ -18,6 +19,13 @@ import { LeadMagnet } from "@/components/forms/LeadMagnet";
 export function Home() {
   return (
     <div className="flex flex-col w-full">
+      <Helmet>
+        <title>Ground Zero | Управляемая бизнес-среда в Ташкенте</title>
+        <meta
+          name="description"
+          content="Коворкинг премиум-класса в Ташкенте. Инфраструктура 24/7 для предпринимателей, IT-специалистов и команд. 3 локации в центре города."
+        />
+      </Helmet>
       {/* Block 1. Hero */}
       <section className="relative min-h-[90vh] flex items-center pt-24 pb-12 overflow-hidden">
         <div className="absolute inset-0 z-0">

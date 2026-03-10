@@ -3,6 +3,25 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+  // Locations
+  const locations = [
+    { name: "Kitob Olami", address: "Проспект Мустакиллик, 6/7" },
+    { name: "Minor", address: "Массив Минор, 57" },
+    { name: "Sharq", address: "2-й проезд Тараккиёт, 33" },
+  ];
+
+  for (const loc of locations) {
+    await prisma.location.upsert({
+      where: { id: locations.indexOf(loc) + 1 },
+      update: {},
+      create: {
+        id: locations.indexOf(loc) + 1,
+        name: loc.name,
+        address: loc.address,
+      },
+    });
+  }
+
   // Inventory
   const branches = ["Kitob Olami", "Minor", "Sharq"];
   const products = ["team", "event", "virtual", "resident", "meeting"];
