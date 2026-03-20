@@ -9,6 +9,7 @@ import { createServer as createViteServer } from "vite";
 import leadRoutes from "./backend/src/routes/leadRoutes";
 import bookingRoutes from "./backend/src/routes/bookingRoutes";
 import { getInventoryStatus } from "./backend/src/controllers/inventoryController";
+import { getLocations } from "./backend/src/controllers/locationController";
 import { calculateEventPrice } from "./backend/src/controllers/eventController";
 import { chatWithAI } from "./backend/src/controllers/aiController";
 import { errorHandler } from "./backend/src/middleware/errorHandler";
@@ -20,6 +21,7 @@ async function startServer() {
   const PORT = 3000;
 
   // 1. Базовая защита и парсинг
+  app.set('trust proxy', 1);
   app.use(helmet({
     // Отключаем CSP для локальной разработки с Vite, иначе скрипты Vite будут заблокированы
     contentSecurityPolicy: process.env.NODE_ENV === "production" ? undefined : false,
@@ -45,6 +47,7 @@ async function startServer() {
   // 3. Подключение маршрутов (API Endpoints)
   app.use('/api/leads', apiLimiter, leadRoutes);
   app.use('/api/bookings', apiLimiter, bookingRoutes);
+  app.get('/api/locations', apiLimiter, getLocations);
   app.get('/api/inventory', apiLimiter, getInventoryStatus);
   app.post('/api/events/calc', apiLimiter, calculateEventPrice);
   app.post('/api/ai/chat', apiLimiter, chatWithAI);

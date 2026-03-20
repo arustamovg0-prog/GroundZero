@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ground Zero — бизнес-среда 24/7 в Ташкенте | Коворкинг, офисы, переговорные</title>
     <meta name="description" content="Управляемая бизнес-среда для вашего результата. Инфраструктура 24/7 в центре Ташкента для предпринимателей, IT-специалистов и команд. Коворкинг, офисы, переговорные, event-площадка, виртуальный офис." />
+    <script>
+      // Suppress benign WebSocket errors in proxy environments
+      (function() {
+        const originalClose = WebSocket.prototype.close;
+        WebSocket.prototype.close = function() {
+          if (this.readyState === WebSocket.OPEN || this.readyState === WebSocket.CONNECTING) {
+            return originalClose.apply(this, arguments);
+          }
+        };
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

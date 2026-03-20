@@ -11,22 +11,13 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { locationsData } from "@/data/locations";
 
-// Симуляция ответа от CMS API
-const fetchOccupancyFromCMS = async () => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // 10% шанс ошибки для демонстрации fallback
-      if (Math.random() < 0.1) {
-        reject(new Error("CMS API Error"));
-      } else {
-        resolve([
-          { id: "kitob-olami", occupancy: 95, status: "High Occupancy" },
-          { id: "minor", occupancy: 65, status: "Normal" },
-          { id: "sharq", occupancy: 85, status: "Normal" },
-        ]);
-      }
-    }, 800);
-  });
+// Загрузка данных о заполняемости из API
+const fetchOccupancyFromAPI = async () => {
+  const response = await fetch("/api/locations");
+  if (!response.ok) {
+    throw new Error("Failed to fetch locations data");
+  }
+  return response.json();
 };
 
 export function Locations() {
@@ -38,16 +29,16 @@ export function Locations() {
 
     const loadData = async () => {
       try {
-        const cmsData: any = await fetchOccupancyFromCMS();
+        const apiData: any = await fetchOccupancyFromAPI();
         if (isMounted) {
           const merged = locationsData.map((loc) => {
-            const cmsLoc = cmsData.find((c: any) => c.id === loc.id);
-            return { ...loc, ...cmsLoc };
+            const apiLoc = apiData.find((c: any) => c.id === loc.id);
+            return { ...loc, ...apiLoc };
           });
           setLocations(merged);
         }
       } catch (error) {
-        console.error("Failed to fetch from CMS, using static fallback", error);
+        console.error("Error loading locations data:", error);
         // Fallback: оставляем locationsData без изменений
       } finally {
         if (isMounted) {

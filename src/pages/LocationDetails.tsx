@@ -20,11 +20,25 @@ export function LocationDetails() {
   useEffect(() => {
     const found = locationsData.find((loc) => loc.id === id);
     if (found) {
-      // Simulate fetching occupancy status
-      setLocation({
-        ...found,
-        occupancy: Math.random() > 0.5 ? 95 : 60, // Random for demo
-      });
+      const loadOccupancy = async () => {
+        try {
+          const response = await fetch("/api/locations");
+          if (response.ok) {
+            const apiData = await response.json();
+            const apiLoc = apiData.find((c: any) => c.id === id);
+            setLocation({
+              ...found,
+              occupancy: apiLoc?.occupancy || 65,
+            });
+          } else {
+            setLocation({ ...found, occupancy: 65 });
+          }
+        } catch (error) {
+          console.error("Error loading occupancy:", error);
+          setLocation({ ...found, occupancy: 65 });
+        }
+      };
+      loadOccupancy();
     } else {
       navigate("/locations");
     }

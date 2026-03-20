@@ -55,10 +55,9 @@ export function EventCalculator() {
   const handleGeneratePDF = async () => {
     setStatus("loading");
     try {
-      await new Promise((resolve, reject) => {
+      await new Promise((resolve) => {
         setTimeout(() => {
-          if (Math.random() < 0.2) reject(new Error("Ошибка генерации PDF"));
-          else resolve(true);
+          resolve(true);
         }, 1500);
       });
       setStatus("success");
