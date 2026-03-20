@@ -1,14 +1,6 @@
 /*
-Theme Name: GroundZero Custom
-Theme URI: https://groundzero.uz
-Author: AI Developer
-Author URI: https://groundzero.uz
-Description: Custom WordPress theme for GroundZero Coworking, built with Tailwind CSS. No heavy builders, clean code.
-Version: 1.0.0
-Text Domain: groundzero
+Theme Name: GroundZero Smart Theme
+Description: Интеграция умного сайта GroundZero (React) в WordPress.
+Author: GroundZero Architect
+Version: 1.0
 */
-
-/* 
- * Tailwind CSS is loaded via CDN in header.php for development.
- * In production, you should compile Tailwind and enqueue the resulting CSS file here.
- */
