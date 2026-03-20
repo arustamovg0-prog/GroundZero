@@ -1,15 +1,13 @@
 {
-  "name": "react-example",
+  "name": "groundzero-backend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx server.ts",
-    "build": "vite build",
-    "preview": "vite preview",
-    "clean": "rm -rf dist",
+    "dev": "tsx backend/src/server.ts",
+    "build": "prisma generate",
+    "start": "node --loader tsx backend/src/server.ts",
     "lint": "tsc --noEmit",
-    "start": "node server.ts",
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
@@ -44,7 +42,6 @@
     "prisma": "^5.22.0",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "typescript": "~5.8.2"
   }
 }
