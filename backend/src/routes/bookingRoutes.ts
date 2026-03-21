@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createBooking, getBookings } from '../controllers/bookingController';
+import { createBooking, getBookings } from '../controllers/bookingController.js';
 
 const router = Router();
 

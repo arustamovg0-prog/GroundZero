@@ -3,27 +3,30 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
-import { createServer as createViteServer } from "vite";
+import path from "path";
+import { fileURLToPath } from "url";
 
-// Импорт маршрутов и middleware
-import leadRoutes from "./backend/src/routes/leadRoutes";
-import bookingRoutes from "./backend/src/routes/bookingRoutes";
-import { getInventoryStatus } from "./backend/src/controllers/inventoryController";
-import { getLocations } from "./backend/src/controllers/locationController";
-import { calculateEventPrice } from "./backend/src/controllers/eventController";
-import { chatWithAI } from "./backend/src/controllers/aiController";
-import { errorHandler } from "./backend/src/middleware/errorHandler";
+// Импорт маршрутов и middleware с расширением .js
+import leadRoutes from "./routes/leadRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
+import { getInventoryStatus } from "./controllers/inventoryController.js";
+import { getLocations } from "./controllers/locationController.js";
+import { calculateEventPrice } from "./controllers/eventController.js";
+import { chatWithAI } from "./controllers/aiController.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT || 3000;
 
   // 1. Базовая защита и парсинг
   app.set('trust proxy', 1);
   app.use(helmet({
-    // Отключаем CSP для локальной разработки с Vite, иначе скрипты Vite будут заблокированы
     contentSecurityPolicy: process.env.NODE_ENV === "production" ? undefined : false,
   }));
   app.use(cors({
@@ -34,8 +37,8 @@ async function startServer() {
 
   // 2. Защита от спама (Rate Limiting)
   const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 минут
-    max: 100, // Увеличим до 100 для нормальной работы чата
+    windowMs: 15 * 60 * 1000,
+    max: 100,
     message: { error: 'Слишком много запросов. Пожалуйста, подождите немного.' }
   });
 
@@ -52,22 +55,16 @@ async function startServer() {
   app.post('/api/events/calc', apiLimiter, calculateEventPrice);
   app.post('/api/ai/chat', apiLimiter, chatWithAI);
 
-  // Vite middleware for development (serves the React frontend)
-  if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-  } else {
-    // In production, serve static files from dist
-    app.use(express.static("dist"));
+  // Serve static files in production
+  if (process.env.NODE_ENV === "production") {
+    const distPath = path.join(__dirname, "../../dist");
+    app.use(express.static(distPath));
     app.get("*", (req, res) => {
-      res.sendFile("dist/index.html", { root: "." });
+      res.sendFile(path.join(distPath, "index.html"));
     });
   }
 
-  // 4. Глобальный перехватчик ошибок (должен быть в самом конце)
+  // 4. Глобальный перехватчик ошибок
   app.use(errorHandler);
 
   app.listen(PORT, "0.0.0.0", () => {

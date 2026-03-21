@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import prisma from '../lib/prisma';
+import prisma from '../database.js';
 
 export const getInventoryStatus = async (req: Request, res: Response, next: NextFunction) => {
   try {

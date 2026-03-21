@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { createLead, getLeads } from '../controllers/leadController';
-import { createBooking, getBookings } from '../controllers/bookingController';
+import { createLead, getLeads } from '../controllers/leadController.js';
+import { createBooking, getBookings } from '../controllers/bookingController.js';
 
 const router = Router();
 
