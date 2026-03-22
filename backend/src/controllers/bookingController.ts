@@ -10,7 +10,7 @@ export const createBooking = async (req: Request, res: Response, next: NextFunct
     }
 
     // Проверяем, существует ли указанная локация (Kitob Olami, Minor, Sharq)
-    const locationExists = await prisma.location.findUnique({ where: { id: parseInt(locationId) } });
+    const locationExists = await prisma.location.findUnique({ where: { id: locationId } });
     if (!locationExists) {
       return res.status(404).json({ error: 'Выбранный филиал не найден.' });
     }
@@ -19,11 +19,11 @@ export const createBooking = async (req: Request, res: Response, next: NextFunct
       data: {
         clientName,
         clientPhone,
-        locationId: parseInt(locationId),
+        locationId: locationId,
         roomType,
         date: new Date(date),
-        durationHours: parseInt(durationHours),
-        guestsCount: parseInt(guestsCount)
+        durationHours: durationHours ? parseInt(durationHours) : null,
+        guestsCount: guestsCount ? parseInt(guestsCount) : null
       }
     });
 

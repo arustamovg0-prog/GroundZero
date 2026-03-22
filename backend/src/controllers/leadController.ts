@@ -41,7 +41,36 @@ export const getLeads = async (req: Request, res: Response, next: NextFunction) 
     const leads = await prisma.lead.findMany({
       orderBy: { createdAt: 'desc' },
     });
-    res.status(200).json({ success: true, data: leads });
+    res.status(200).json({ success: true, leads: leads });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createDownloadLead = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ error: 'Email обязателен.' });
+    }
+
+    const newLead = await prisma.lead.create({
+      data: {
+        name: 'Download Request',
+        phone: 'N/A',
+        email,
+        interestIn: 'PDF Guide',
+        status: 'NEW',
+        notes: 'Requested PDF guide from LeadMagnet',
+      },
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'PDF успешно отправлен на вашу почту!',
+      data: newLead
+    });
   } catch (error) {
     next(error);
   }

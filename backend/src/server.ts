@@ -59,6 +59,8 @@ async function startServer() {
 
   // 3. Подключение маршрутов (API Endpoints)
   app.use('/api/leads', apiLimiter, leadRoutes);
+  app.use('/api/admin/leads', apiLimiter, leadRoutes);
+  app.use('/api/downloads', apiLimiter, leadRoutes);
   app.use('/api/bookings', apiLimiter, bookingRoutes);
   app.get('/api/locations', apiLimiter, getLocations);
   app.get('/api/inventory', apiLimiter, getInventoryStatus);

@@ -24,6 +24,11 @@ model Lead {
   email       String
   phone       String?
   source      String?
+  company     String?
+  interestIn  String?
+  teamSize    Int?
+  term        Int?
+  utm         String?
   status      String   @default("NEW")
   notes       String?
   createdAt   DateTime @default(now())
@@ -31,16 +36,18 @@ model Lead {
 }
 
 model Booking {
-  id          String   @id @default(uuid())
-  locationId  String
-  location    Location @relation(fields: [locationId], references: [id])
-  customerName String
-  customerEmail String
-  startDate   DateTime
-  endDate     DateTime
-  status      String   @default("CONFIRMED")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(uuid())
+  locationId    String
+  location      Location @relation(fields: [locationId], references: [id])
+  clientName    String
+  clientPhone   String
+  roomType      String
+  date          DateTime
+  durationHours Int?
+  guestsCount   Int?
+  status        String   @default("CONFIRMED")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Inventory {

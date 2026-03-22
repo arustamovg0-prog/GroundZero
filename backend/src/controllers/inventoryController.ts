@@ -11,7 +11,7 @@ export const getInventoryStatus = async (req: Request, res: Response, next: Next
 
     const inventory = await prisma.inventory.findFirst({
       where: {
-        product: String(product),
+        productType: String(product),
       },
     });
 

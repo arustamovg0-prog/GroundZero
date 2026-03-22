@@ -9,8 +9,8 @@ export const getLocations = async (req: Request, res: Response, next: NextFuncti
     // Для примера добавим статические данные или рассчитаем на основе инвентаря.
     const locationsWithOccupancy = await Promise.all(locations.map(async (loc) => {
       // Ищем инвентарь для этой локации
-      const inventory = await prisma.inventory.findMany({
-        where: { branch: loc.name }
+    const inventory = await prisma.inventory.findMany({
+        where: { locationId: loc.id }
       });
       
       const fullCount = inventory.filter(i => i.status === 'FULL').length;
