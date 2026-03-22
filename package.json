@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx backend/src/server.ts",
-    "build": "vite build",
+    "build": "npx prisma generate --schema=backend/prisma/schema.prisma && vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",

@@ -6,6 +6,8 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
+import fs from "fs";
+
 // Импорт маршрутов и middleware с расширением .js
 import leadRoutes from "./routes/leadRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
@@ -14,6 +16,7 @@ import { getLocations } from "./controllers/locationController.js";
 import { calculateEventPrice } from "./controllers/eventController.js";
 import { chatWithAI } from "./controllers/aiController.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { db } from "./database.js";
 
 dotenv.config();
 
@@ -22,7 +25,7 @@ const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
-  const PORT = process.env.PORT || 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
   // 1. Базовая защита и парсинг
   app.set('trust proxy', 1);
@@ -43,8 +46,15 @@ async function startServer() {
   });
 
   // Health check
-  app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", message: "GroundZero API is running" });
+  app.get("/api/health", async (req, res) => {
+    try {
+      // Проверка подключения к базе данных
+      await db.$queryRaw`SELECT 1`;
+      res.json({ status: "ok", message: "GroundZero API is running and database is connected" });
+    } catch (error) {
+      console.error("❌ Database health check failed:", error);
+      res.status(500).json({ status: "error", message: "GroundZero API is running but database is disconnected" });
+    }
   });
 
   // 3. Подключение маршрутов (API Endpoints)
@@ -58,10 +68,17 @@ async function startServer() {
   // Serve static files in production
   if (process.env.NODE_ENV === "production") {
     const distPath = path.join(__dirname, "../../dist");
-    app.use(express.static(distPath));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
-    });
+    if (fs.existsSync(distPath)) {
+      app.use(express.static(distPath));
+      app.get("*", (req, res) => {
+        res.sendFile(path.join(distPath, "index.html"));
+      });
+    } else {
+      console.warn("⚠️ Warning: dist folder not found at", distPath);
+      app.get("/", (req, res) => {
+        res.json({ status: "ok", message: "GroundZero API is running, but frontend is not built." });
+      });
+    }
   }
 
   // 4. Глобальный перехватчик ошибок
