@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Location {
+  id          String      @id @default(uuid())
+  name        String
+  address     String
+  capacity    Int
+  inventory   Inventory[]
+  bookings    Booking[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Lead {
+  id          String   @id @default(uuid())
+  name        String
+  email       String
+  phone       String?
+  source      String?
+  status      String   @default("NEW")
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Booking {
+  id          String   @id @default(uuid())
+  locationId  String
+  location    Location @relation(fields: [locationId], references: [id])
+  customerName String
+  customerEmail String
+  startDate   DateTime
+  endDate     DateTime
+  status      String   @default("CONFIRMED")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Inventory {
+  id          String   @id @default(uuid())
+  locationId  String
+  location    Location @relation(fields: [locationId], references: [id])
+  productType String
+  quantity    Int
+  status      String   @default("AVAILABLE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Settings {
+  id    String @id @default("global")
+  key   String @unique
+  value String
+}
